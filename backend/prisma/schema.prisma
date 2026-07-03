@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String               @id @default(uuid())
+  nickname         String               @unique
+  passwordHash     String
+  createdAt        DateTime             @default(now())
+  createdComps     Competition[]        @relation("CompetitionCreator")
+  competitions     CompetitionMember[]
+  predictions      Prediction[]
+}
+
+model Championship {
+  id           String        @id @default(uuid())
+  apiId        Int           @unique
+  name         String
+  logoUrl      String?
+  competitions Competition[]
+  matches      Match[]
+}
+
+model Competition {
+  id             String               @id @default(uuid())
+  name           String
+  creatorId      String
+  championshipId String
+  createdAt      DateTime             @default(now())
+  creator        User                 @relation("CompetitionCreator", fields: [creatorId], references: [id])
+  championship   Championship         @relation(fields: [championshipId], references: [id])
+  members        CompetitionMember[]
+}
+
+model CompetitionMember {
+  id             String      @id @default(uuid())
+  userId         String
+  competitionId  String
+  totalPoints    Int         @default(0)
+  joinedAt       DateTime    @default(now())
+  user           User        @relation(fields: [userId], references: [id])
+  competition    Competition @relation(fields: [competitionId], references: [id])
+
+  @@unique([userId, competitionId])
+}
+
+model Match {
+  id               String       @id @default(uuid())
+  apiId            Int          @unique
+  championshipId   String
+  homeTeamName     String
+  homeTeamLogo     String?
+  awayTeamName     String
+  awayTeamLogo     String?
+  kickoffTime      DateTime
+  homeScore        Int?
+  awayScore        Int?
+  status           String       // e.g. "SCHEDULED", "FINISHED" (football-data.org status values)
+  matchday         Int?         // round number within the stage (e.g. 5, or leg 1/2 in knockouts)
+  stage            String?      // e.g. "REGULAR_SEASON", "LEAGUE_STAGE", "GROUP_STAGE", "QUARTER_FINALS", "FINAL"
+  group            String?      // e.g. "GROUP_A", when the stage has groups
+  championship     Championship @relation(fields: [championshipId], references: [id])
+  predictions      Prediction[]
+}
+
+model Prediction {
+  id                   String   @id @default(uuid())
+  userId               String
+  matchId              String
+  predictedHomeScore   Int
+  predictedAwayScore   Int
+  pointsEarned         Int?
+  createdAt            DateTime @default(now())
+  user                 User     @relation(fields: [userId], references: [id])
+  match                Match    @relation(fields: [matchId], references: [id])
+
+  @@unique([userId, matchId])
+}
