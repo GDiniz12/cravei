@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
+import { API_BASE_URL } from '../../lib/api';
 
 export default function Login() {
   const [nickname, setNickname] = useState('');
@@ -18,7 +19,7 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3001/api/auth/login', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nickname, password }),

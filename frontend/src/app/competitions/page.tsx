@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../lib/api';
 
 export default function Competitions() {
   const [competitions, setCompetitions] = useState<any[]>([]);
@@ -19,10 +20,10 @@ export default function Competitions() {
     }
 
     Promise.all([
-      fetch('http://localhost:3001/api/competitions', {
+      fetch(`${API_BASE_URL}/api/competitions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       }).then(res => res.json()),
-      fetch('http://localhost:3001/api/competitions/championships', {
+      fetch(`${API_BASE_URL}/api/competitions/championships`, {
         headers: { 'Authorization': `Bearer ${token}` }
       }).then(res => res.json())
     ])
@@ -46,7 +47,7 @@ export default function Competitions() {
     if (!token) return;
 
     try {
-      const res = await fetch('http://localhost:3001/api/competitions', {
+      const res = await fetch(`${API_BASE_URL}/api/competitions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

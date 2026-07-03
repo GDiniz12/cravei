@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BackButton from '../../components/BackButton';
+import { API_BASE_URL } from '../../../lib/api';
 
 type SaveStatus = 'saving' | 'saved' | 'error';
 
@@ -126,7 +127,7 @@ export default function CompetitionDetails() {
     const fetchAll = async () => {
       try {
         // 1. Fetch competition
-        const compRes = await fetch(`http://localhost:3001/api/competitions/${id}`, {
+        const compRes = await fetch(`${API_BASE_URL}/api/competitions/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const compData = await compRes.json();
@@ -135,20 +136,20 @@ export default function CompetitionDetails() {
         setCompetition(compData);
 
         // Join the competition if the user isn't a member yet (e.g. arrived via a shared link)
-        await fetch(`http://localhost:3001/api/competitions/${id}/join`, {
+        await fetch(`${API_BASE_URL}/api/competitions/${id}/join`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         // 2. Fetch matches for this championship
-        const matchesRes = await fetch(`http://localhost:3001/api/matches?championshipId=${compData.championshipId}`, {
+        const matchesRes = await fetch(`${API_BASE_URL}/api/matches?championshipId=${compData.championshipId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const matchesData = await matchesRes.json();
         setMatches(matchesData);
 
         // 3. Fetch user predictions
-        const predRes = await fetch(`http://localhost:3001/api/matches/my-predictions`, {
+        const predRes = await fetch(`${API_BASE_URL}/api/matches/my-predictions`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const predData = await predRes.json();
@@ -248,7 +249,7 @@ export default function CompetitionDetails() {
     setSaveStatus(prev => ({ ...prev, [matchId]: 'saving' }));
 
     try {
-      const res = await fetch(`http://localhost:3001/api/matches/${matchId}/predict`, {
+      const res = await fetch(`${API_BASE_URL}/api/matches/${matchId}/predict`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import BackButton from '../../../../components/BackButton';
+import { API_BASE_URL } from '../../../../../lib/api';
 
 export default function MatchPredictions() {
   const params = useParams();
@@ -21,7 +22,7 @@ export default function MatchPredictions() {
       return;
     }
 
-    fetch(`http://localhost:3001/api/competitions/${id}/matches/${matchId}/predictions`, {
+    fetch(`${API_BASE_URL}/api/competitions/${id}/matches/${matchId}/predictions`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => {

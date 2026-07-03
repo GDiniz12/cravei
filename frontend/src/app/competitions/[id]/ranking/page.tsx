@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '../../../components/BackButton';
+import { API_BASE_URL } from '../../../../lib/api';
 
 export default function CompetitionRanking() {
   const params = useParams();
@@ -28,7 +29,7 @@ export default function CompetitionRanking() {
       }
     }
 
-    fetch(`http://localhost:3001/api/competitions/${id}`, {
+    fetch(`${API_BASE_URL}/api/competitions/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
