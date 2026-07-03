@@ -12,6 +12,11 @@
   --volt-dark: #9dc900;
   --danger: #ff4d3d;
 
+  /* Categorical series for match-prediction stats (validated for CVD safety) */
+  --series-home: #3987e5;
+  --series-draw: #9085e9;
+  --series-away: #d95926;
+
   --grid-gap: 2rem;
   --spacing: 4rem;
 }
@@ -355,6 +360,15 @@ select.input option {
   gap: 2rem;
 }
 
+.match-card-clickable {
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.match-card-clickable:hover {
+  border-color: var(--volt);
+}
+
 @media (max-width: 560px) {
   .match-card {
     padding: 1.25rem;
@@ -607,6 +621,71 @@ select.input option {
 .ranking-row-self {
   border-color: var(--volt);
   border-width: 2px;
+}
+
+/* Match prediction stats */
+.stat-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--pitch-black);
+  margin-bottom: 1rem;
+}
+
+.stat-bar-segment:not(:last-child) {
+  margin-right: 2px;
+}
+
+.stat-bar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-bar-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--chalk-dim);
+}
+
+.stat-bar-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stat-tile-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--chalk-dim);
+}
+
+.stat-tile-value {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: 1.6rem;
+  color: var(--chalk);
 }
 
 @media (max-width: 560px) {

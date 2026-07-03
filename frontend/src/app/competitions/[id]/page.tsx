@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BackButton from '../../components/BackButton';
 
@@ -69,6 +69,7 @@ const groupMatchesIntoRounds = (matches: any[]): RoundGroup[] => {
 
 export default function CompetitionDetails() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
 
   const [competition, setCompetition] = useState<any>(null);
@@ -363,7 +364,8 @@ export default function CompetitionDetails() {
                                 <div
                                   key={match.id}
                                   ref={el => { matchRefs.current[match.id] = el; }}
-                                  className="match-card"
+                                  className="match-card match-card-clickable"
+                                  onClick={() => router.push(`/competitions/${id}/matches/${match.id}`)}
                                 >
                                   {/* Match Info */}
                                   <div className="match-info">
@@ -393,7 +395,10 @@ export default function CompetitionDetails() {
                                   </div>
 
                                   {/* Prediction Inputs */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                  <div
+                                    style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}
+                                    onClick={e => e.stopPropagation()}
+                                  >
                                     <input
                                       type="number"
                                       className="score-input"
