@@ -46,7 +46,7 @@ export default function Login() {
   return (
     <div className="pitch-section floodlight">
       <div className="container page" style={{ position: 'relative' }}>
-        <BackButton />
+        <BackButton href="/" />
         <div className="swiss-grid">
           <div className="col-6" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <h1 className="text-huge">

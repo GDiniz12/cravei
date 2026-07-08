@@ -1,13 +1,9 @@
-'use client';
+import Link from 'next/link';
 
-import { useRouter } from 'next/navigation';
-
-export default function BackButton() {
-  const router = useRouter();
-
+export default function BackButton({ href }: { href: string }) {
   return (
-    <button className="btn btn-outline back-button" onClick={() => router.back()}>
+    <Link href={href} className="btn btn-outline back-button">
       ← VOLTAR
-    </button>
+    </Link>
   );
 }

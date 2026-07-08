@@ -16,7 +16,7 @@ export default function CompetitionRanking() {
   useEffect(() => {
     const token = localStorage.getItem('cravei_token');
     if (!token) {
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `/register?redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
 
@@ -41,7 +41,7 @@ export default function CompetitionRanking() {
   if (loading) return <div className="container page display" style={{ fontSize: '2rem' }}>CARREGANDO...</div>;
   if (!competition) return (
     <div className="container page">
-      <BackButton />
+      <BackButton href={`/competitions/${id}`} />
       <div className="display" style={{ fontSize: '2rem' }}>COMPETIÇÃO NÃO ENCONTRADA.</div>
     </div>
   );
@@ -50,7 +50,7 @@ export default function CompetitionRanking() {
 
   return (
     <div className="container page">
-      <BackButton />
+      <BackButton href={`/competitions/${id}`} />
       <h1 className="text-huge" style={{ marginBottom: '1rem' }}>CLASSIFICAÇÃO</h1>
       <p className="text-large accent-text" style={{ marginBottom: '3rem' }}>
         {competition.name.toUpperCase()}

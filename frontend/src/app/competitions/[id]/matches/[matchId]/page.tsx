@@ -18,7 +18,7 @@ export default function MatchPredictions() {
   useEffect(() => {
     const token = localStorage.getItem('cravei_token');
     if (!token) {
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `/register?redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
 
@@ -37,7 +37,7 @@ export default function MatchPredictions() {
   if (loading) return <div className="container page display" style={{ fontSize: '2rem' }}>CARREGANDO...</div>;
   if (notFound || !data) return (
     <div className="container page">
-      <BackButton />
+      <BackButton href={`/competitions/${id}`} />
       <div className="display" style={{ fontSize: '2rem' }}>PARTIDA NÃO ENCONTRADA.</div>
     </div>
   );
@@ -47,7 +47,7 @@ export default function MatchPredictions() {
 
   return (
     <div className="container page">
-      <BackButton />
+      <BackButton href={`/competitions/${id}`} />
 
       <p className="match-meta">
         {new Date(match.kickoffTime).toLocaleString('pt-BR')} | STATUS: {match.status}

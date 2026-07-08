@@ -120,7 +120,7 @@ export default function CompetitionDetails() {
   useEffect(() => {
     const token = localStorage.getItem('cravei_token');
     if (!token) {
-      window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `/register?redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
 
@@ -293,7 +293,7 @@ export default function CompetitionDetails() {
   if (loading) return <div className="container page display" style={{ fontSize: '2rem' }}>CARREGANDO...</div>;
   if (!competition) return (
     <div className="container page">
-      <BackButton />
+      <BackButton href="/competitions" />
       <div className="display" style={{ fontSize: '2rem' }}>COMPETIÇÃO NÃO ENCONTRADA.</div>
     </div>
   );
@@ -327,7 +327,7 @@ export default function CompetitionDetails() {
         </div>
       </div>
 
-      <BackButton />
+      <BackButton href="/competitions" />
       <p className="text-large accent-text" style={{ marginBottom: '3rem' }}>
         {competition.championship.name.toUpperCase()}
       </p>
