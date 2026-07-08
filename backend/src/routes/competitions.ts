@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import prisma from '../prismaClient';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { computeRankingStats } from '../lib/rankingStats';
 
 const router = Router();
 
@@ -59,6 +60,41 @@ router.get('/:id', async (req: AuthRequest, res: Response) => {
     res.json(competition);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao buscar competição' });
+  }
+});
+
+router.get('/:id/ranking', async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.userId;
+
+    const competition = await prisma.competition.findUnique({
+      where: { id: id as string },
+      include: {
+        championship: true,
+        members: { include: { user: { select: { id: true, nickname: true } } } }
+      }
+    });
+    if (!competition) return res.status(404).json({ error: 'Competição não encontrada' });
+
+    const matches = await prisma.match.findMany({ where: { championshipId: competition.championshipId } });
+    const memberUserIds = competition.members.map(m => m.userId);
+    const predictions = await prisma.prediction.findMany({
+      where: { userId: { in: memberUserIds }, matchId: { in: matches.map(m => m.id) } }
+    });
+
+    const stats = computeRankingStats(
+      competition.members.map(m => ({ userId: m.userId, nickname: m.user.nickname })),
+      matches,
+      predictions
+    );
+
+    res.json({
+      competition: { id: competition.id, name: competition.name, championship: competition.championship },
+      members: stats.map(s => ({ ...s, isSelf: s.userId === userId })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar classificação' });
   }
 });
 
