@@ -6,6 +6,9 @@ import Image from 'next/image';
 import BackButton from '../../../../components/BackButton';
 import { API_BASE_URL } from '../../../../../lib/api';
 
+type Outcome = 'HOME' | 'DRAW' | 'AWAY';
+const OUTCOME_LABELS: Record<Outcome, string> = { HOME: 'CASA', DRAW: 'EMPATE', AWAY: 'FORA' };
+
 export default function MatchPredictions() {
   const params = useParams();
   const id = params.id as string;
@@ -139,6 +142,56 @@ export default function MatchPredictions() {
                     </span>
                   </div>
                 )}
+
+                {stats.groupConsensus && (
+                  <div className="stat-tile">
+                    <span className="stat-tile-label">CONSENSO DO GRUPO</span>
+                    <span className="stat-tile-value" style={{ fontSize: '1.1rem' }}>
+                      {stats.groupConsensus.pct}% APOSTOU EM {OUTCOME_LABELS[stats.groupConsensus.outcome as Outcome]}
+                      {stats.groupConsensus.matchedReality != null && (
+                        stats.groupConsensus.matchedReality ? ' · GRUPO ACERTOU' : ' · ZEBRA! GRUPO ERROU'
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {stats?.accuracy && (
+            <div className="card" style={{ marginBottom: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>CRAVADORES</h2>
+              {stats.topScorers.length === 0 ? (
+                <p className="muted">Ninguém cravou o placar dessa partida.</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {stats.topScorers.map((p: any) => (
+                    <div key={p.userId} className={`ranking-row${p.isSelf ? ' ranking-row-self' : ''}`}>
+                      <span className="ranking-nickname">{p.nickname}{p.isSelf ? ' (VOCÊ)' : ''}</span>
+                      <span className="ranking-points">{match.homeScore} x {match.awayScore}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {stats?.accuracy && stats.proximityRanking.length > 0 && (
+            <div className="card" style={{ marginBottom: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>RANKING DE PROXIMIDADE</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {stats.proximityRanking.map((p: any, index: number) => (
+                  <div key={p.userId} className={`ranking-row${p.isSelf ? ' ranking-row-self' : ''}`}>
+                    <span className="ranking-position">{index + 1}º</span>
+                    <span className="ranking-nickname">{p.nickname}{p.isSelf ? ' (VOCÊ)' : ''}</span>
+                    <span className="ranking-points">
+                      {p.predictedHomeScore} x {p.predictedAwayScore}{' '}
+                      <span className="muted" style={{ fontSize: '0.85rem' }}>
+                        ({p.distance === 0 ? 'CRAVOU' : `ERROU POR ${p.distance} GOL(S)`})
+                      </span>
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           )}

@@ -181,7 +181,22 @@ router.get('/:id/matches/:matchId/predictions', async (req: AuthRequest, res: Re
           }
         }
 
+        const majorityOutcome: 'HOME' | 'DRAW' | 'AWAY' =
+          homeWins >= draws && homeWins >= awayWins ? 'HOME' : draws >= awayWins ? 'DRAW' : 'AWAY';
+        const majorityCount = majorityOutcome === 'HOME' ? homeWins : majorityOutcome === 'DRAW' ? draws : awayWins;
+        let groupConsensus: { outcome: 'HOME' | 'DRAW' | 'AWAY'; pct: number; matchedReality: boolean | null } = {
+          outcome: majorityOutcome,
+          pct: Math.round((majorityCount / total) * 100),
+          matchedReality: null,
+        };
+
         let accuracy: { exact: number; winner: number; wrong: number } | null = null;
+        let topScorers: { userId: string; nickname: string; isSelf: boolean }[] = [];
+        let proximityRanking: {
+          userId: string; nickname: string; isSelf: boolean;
+          predictedHomeScore: number; predictedAwayScore: number; distance: number;
+        }[] = [];
+
         if (match.status === 'FINISHED' && match.homeScore != null && match.awayScore != null) {
           let exact = 0, winner = 0, wrong = 0;
           const actualResult = Math.sign(match.homeScore - match.awayScore);
@@ -195,6 +210,24 @@ router.get('/:id/matches/:matchId/predictions', async (req: AuthRequest, res: Re
             }
           }
           accuracy = { exact, winner, wrong };
+
+          topScorers = allPredictions
+            .filter(p => p.predictedHomeScore === match.homeScore && p.predictedAwayScore === match.awayScore)
+            .map(p => ({ userId: p.userId, nickname: p.user.nickname, isSelf: p.userId === userId }));
+
+          proximityRanking = allPredictions
+            .map(p => ({
+              userId: p.userId,
+              nickname: p.user.nickname,
+              isSelf: p.userId === userId,
+              predictedHomeScore: p.predictedHomeScore,
+              predictedAwayScore: p.predictedAwayScore,
+              distance: Math.abs(p.predictedHomeScore - match.homeScore!) + Math.abs(p.predictedAwayScore - match.awayScore!),
+            }))
+            .sort((a, b) => a.distance - b.distance || a.nickname.localeCompare(b.nickname));
+
+          const majoritySign = majorityOutcome === 'HOME' ? 1 : majorityOutcome === 'DRAW' ? 0 : -1;
+          groupConsensus = { ...groupConsensus, matchedReality: majoritySign === actualResult };
         }
 
         stats = {
@@ -206,6 +239,9 @@ router.get('/:id/matches/:matchId/predictions', async (req: AuthRequest, res: Re
           avgAwayGoals: Math.round(avgAwayGoals * 10) / 10,
           mostCommonScore: mostCommon ? { ...mostCommon, pct: Math.round((mostCommon.count / total) * 100) } : null,
           accuracy,
+          topScorers,
+          proximityRanking,
+          groupConsensus,
         };
       }
     }
