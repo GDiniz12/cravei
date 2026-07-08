@@ -494,11 +494,15 @@ select.input option {
   border-bottom: 1px solid var(--line);
 }
 
-.site-logo {
-  font-family: var(--font-display), Impact, sans-serif;
-  font-size: 1.75rem;
-  text-transform: uppercase;
-  color: var(--volt);
+.site-logo a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.site-logo img {
+  height: 2.25rem;
+  width: auto;
+  display: block;
 }
 
 .site-user {
@@ -697,7 +701,7 @@ select.input option {
     text-align: center;
   }
 
-  .site-logo {
-    font-size: 1.4rem;
+  .site-logo img {
+    height: 1.85rem;
   }
 }
