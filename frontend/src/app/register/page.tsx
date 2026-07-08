@@ -36,8 +36,10 @@ export default function Register() {
         throw new Error(data.error || 'Falha ao registrar');
       }
 
-      // Account created but not logged in yet — send them to log in, then back to where they came from
-      window.location.href = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+      // Log the user in immediately with the token from registration, no need to log in again
+      localStorage.setItem('cravei_token', data.token);
+      localStorage.setItem('cravei_user', JSON.stringify(data.user));
+      window.location.href = redirect || '/competitions';
     } catch (err: any) {
       setError(err.message);
     }
@@ -48,7 +50,7 @@ export default function Register() {
   return (
     <div className="pitch-section floodlight">
       <div className="container page" style={{ position: 'relative' }}>
-        <BackButton />
+        <BackButton href="/" />
         <div className="swiss-grid">
           <div className="col-6" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <h1 className="text-huge">

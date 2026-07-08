@@ -1,10 +1,17 @@
-import BackButton from './components/BackButton';
+'use client';
+
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setLoggedIn(!!localStorage.getItem('cravei_token'));
+  }, []);
+
   return (
     <div className="pitch-section floodlight">
       <div className="container page" style={{ position: 'relative' }}>
-        <BackButton />
         <div className="swiss-grid">
           {/* Left Column (8 cols) */}
           <div className="col-8" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -17,9 +24,15 @@ export default function Home() {
               CRIE COMPETIÇÕES. DESAFIE SEUS AMIGOS. DÊ SEUS PALPITES NOS PRINCIPAIS CAMPEONATOS DE FUTEBOL.
             </p>
             <div style={{ marginTop: '2rem' }}>
-              <a href="/register">
-                <button className="btn" style={{ fontSize: '1.3rem' }}>Começar a Palpitar</button>
-              </a>
+              {loggedIn ? (
+                <a href="/competitions">
+                  <button className="btn" style={{ fontSize: '1.3rem' }}>Entrar nas Competições</button>
+                </a>
+              ) : (
+                <a href="/register">
+                  <button className="btn" style={{ fontSize: '1.3rem' }}>Começar a Palpitar</button>
+                </a>
+              )}
             </div>
           </div>
 

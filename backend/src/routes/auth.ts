@@ -16,7 +16,9 @@ router.post('/register', async (req, res) => {
     const user = await prisma.user.create({
       data: { nickname, passwordHash }
     });
-    res.status(201).json({ id: user.id, nickname: user.nickname });
+    // Log the user in immediately so they don't have to re-enter credentials after registering.
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret');
+    res.status(201).json({ token, user: { id: user.id, nickname: user.nickname } });
   } catch (error) {
     res.status(500).json({ error: 'Failed to register' });
   }
