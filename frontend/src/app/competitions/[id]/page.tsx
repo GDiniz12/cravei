@@ -371,7 +371,9 @@ export default function CompetitionDetails() {
                                   {/* Match Info */}
                                   <div className="match-info">
                                     <p className="match-meta">
-                                      {new Date(match.kickoffTime).toLocaleString('pt-BR')} | STATUS: {match.status}
+                                      {new Date(match.kickoffTime).toLocaleString('pt-BR')} | STATUS: {
+                                        ({ SCHEDULED: 'AGENDADO', LIVE: 'AO VIVO', FINISHED: 'ENCERRADO' } as Record<string, string>)[match.displayStatus] ?? match.displayStatus
+                                      }
                                     </p>
                                     <div className="match-teams">
                                       <span className="team team-home">
@@ -420,7 +422,7 @@ export default function CompetitionDetails() {
                                   {/* Prediction save status */}
                                   <div className="prediction-status" style={{ minWidth: '140px', textAlign: 'center' }}>
                                     {hasStarted ? (
-                                      <span className="muted">ENCERRADO</span>
+                                      <span className="muted">PALPITES ENCERRADOS</span>
                                     ) : saveStatus[match.id] === 'saving' ? (
                                       <span className="muted">SALVANDO...</span>
                                     ) : saveStatus[match.id] === 'saved' ? (

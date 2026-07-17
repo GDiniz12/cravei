@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import prisma from '../prismaClient';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { withDisplayStatus } from '../lib/matchStatus';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
       orderBy: { kickoffTime: 'asc' }
     });
 
-    res.json(matches);
+    res.json(matches.map(withDisplayStatus));
   } catch (error) {
     res.status(500).json({ error: 'Erro ao buscar partidas' });
   }

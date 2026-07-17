@@ -46,14 +46,15 @@ export default function MatchPredictions() {
   );
 
   const { match, hasStarted, totalMembers, submittedCount, myPrediction, predictions, stats } = data;
-  const isLive = ['FINISHED', 'IN_PLAY', 'PAUSED'].includes(match.status);
+  const showScore = match.displayStatus === 'LIVE' || match.displayStatus === 'FINISHED';
+  const statusLabel = { SCHEDULED: 'AGENDADO', LIVE: 'AO VIVO', FINISHED: 'ENCERRADO' }[match.displayStatus as string] ?? match.displayStatus;
 
   return (
     <div className="container page">
       <BackButton href={`/competitions/${id}`} />
 
       <p className="match-meta">
-        {new Date(match.kickoffTime).toLocaleString('pt-BR')} | STATUS: {match.status}
+        {new Date(match.kickoffTime).toLocaleString('pt-BR')} | STATUS: {statusLabel}
       </p>
       <div className="match-teams" style={{ marginBottom: '3rem' }}>
         <span className="team team-home">
@@ -63,7 +64,7 @@ export default function MatchPredictions() {
           )}
         </span>
         <span className="match-vs">
-          {isLive ? `${match.homeScore ?? 0} x ${match.awayScore ?? 0}` : 'VS'}
+          {showScore ? `${match.homeScore ?? 0} x ${match.awayScore ?? 0}` : 'VS'}
         </span>
         <span className="team team-away">
           {match.awayTeamLogo && (

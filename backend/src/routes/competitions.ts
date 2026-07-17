@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../prismaClient';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { computeRankingStats } from '../lib/rankingStats';
+import { withDisplayStatus } from '../lib/matchStatus';
 
 const router = Router();
 
@@ -247,7 +248,7 @@ router.get('/:id/matches/:matchId/predictions', async (req: AuthRequest, res: Re
     }
 
     res.json({
-      match,
+      match: withDisplayStatus(match),
       hasStarted,
       totalMembers: members.length,
       submittedCount: allPredictions.length,

@@ -17,7 +17,7 @@ const CURRENT_SEASON = 2026;
 const REQUEST_DELAY_MS = 6500;
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const syncMatches = async () => {
+export const runMatchSync = async () => {
   console.log(`Starting match sync for season ${CURRENT_SEASON}...`);
 
   for (const league of TARGET_LEAGUES) {
@@ -96,7 +96,10 @@ const syncMatches = async () => {
   }
 
   console.log('Match sync complete!');
-  process.exit(0);
 };
 
-syncMatches();
+// Only run automatically when invoked directly (`npm run sync:matches`), not
+// when imported by the cron job.
+if (require.main === module) {
+  runMatchSync().then(() => process.exit(0));
+}

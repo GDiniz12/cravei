@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import competitionRoutes from './routes/competitions';
 import matchRoutes from './routes/matches';
+import { startMatchSyncJob } from './jobs/matchSyncJob';
 
 dotenv.config();
 
@@ -24,4 +25,5 @@ app.get('/api/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  startMatchSyncJob();
 });
